@@ -163,9 +163,11 @@ suite("Functional Tests", function () {
 
   suite("Delete issues", () => {
     test("Delete an issue: DELETE request to /api/issues/{project}", (done) => {
+      // get an issue to delete
       request()
         .get("/api/issues/apitest")
         .end((_err, getResponse) => {
+          // check if the response is an array and has at least one issue
           if (
             Array.isArray(getResponse.body) &&
             getResponse.body.length > 0 &&
@@ -181,6 +183,7 @@ suite("Functional Tests", function () {
                 assert.property(res.body, "result");
                 assert.property(res.body, "_id");
                 assert.strictEqual(res.body.result, "successfully deleted");
+                // compare both ids
                 assert.strictEqual(res.body._id, getResponse.body[0]._id);
               });
         });
