@@ -1,5 +1,6 @@
 "use strict";
-const { createIssue, findAllIssues } = require("../db");
+const e = require("express");
+const { createIssue, findAllIssues, deleteIssue } = require("../db");
 
 module.exports = function (app) {
   app
@@ -31,7 +32,15 @@ module.exports = function (app) {
     })
 
     .delete(async (req, res) => {
-      let project = req.params.project;
-      res.json([]);
+      const { _id } = req.body;
+      if (!_id) return res.json({ error: "missing _id" });
+
+      try {
+        const r = await deleteIssue(_id);
+        if (!r?._id) return res.json({ _id, error: "could not delete" });
+        return res.json({ _id, result: "successfully deleted" });
+      } catch (error) {
+        return res.json({ _id, error: "could not delete" });
+      }
     });
 };

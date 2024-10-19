@@ -46,9 +46,13 @@ const updateIssue = async (id, updates) => {
   return updatedIssue;
 };
 
+const deleteIssue = async (id) => await Issue.findByIdAndDelete(id).exec();
+
 module.exports = {
   dbConnect,
   createIssue,
   findAllIssues,
   findIssueById,
+  updateIssue,
+  deleteIssue,
 };
