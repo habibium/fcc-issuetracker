@@ -41,7 +41,12 @@ module.exports = function (app) {
       )
         return res.json({ error: "no update field(s) sent", _id });
       try {
-        await updateIssue(_id, updates);
+        const updatedIssue = await updateIssue(_id, {
+          ...updates,
+          updated_on: new Date(),
+        });
+        if (!updatedIssue) return res.json({ error: "could not update", _id });
+
         return res.json({ result: "successfully updated", _id });
       } catch (error) {
         return res.json({ error: "could not update", _id });
