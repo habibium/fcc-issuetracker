@@ -149,6 +149,16 @@ suite("Functional Tests", function () {
     });
 
     test("Update an issue with missing _id: PUT request to /api/issues/{project}", (done) => {
+      request()
+        .put("/api/issues/apitest")
+        .type("form")
+        .send({ _id: "" })
+        .end((_err, res) => {
+          assert.equal(res.status, 200);
+          assert.isObject(res.body);
+          assert.property(res.body, "error");
+          assert.strictEqual(res.body.error, "missing _id");
+        });
       done();
     });
 
