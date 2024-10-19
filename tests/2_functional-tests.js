@@ -163,6 +163,27 @@ suite("Functional Tests", function () {
 
   suite("Delete issues", () => {
     test("Delete an issue: DELETE request to /api/issues/{project}", (done) => {
+      request()
+        .get("/api/issues/apitest")
+        .end((_err, getResponse) => {
+          if (
+            Array.isArray(getResponse.body) &&
+            getResponse.body.length > 0 &&
+            getResponse.body[0]?._id
+          )
+            request()
+              .delete("/api/issues/apitest")
+              .type("form")
+              .send({ _id: getResponse.body[0]._id })
+              .end((_err, res) => {
+                assert.equal(res.status, 200);
+                assert.isObject(res.body);
+                assert.property(res.body, "result");
+                assert.property(res.body, "_id");
+                assert.strictEqual(res.body.result, "successfully deleted");
+                assert.strictEqual(res.body._id, getResponse.body[0]._id);
+              });
+        });
       done();
     });
 
