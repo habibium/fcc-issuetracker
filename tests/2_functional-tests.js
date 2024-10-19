@@ -79,6 +79,7 @@ suite("Functional Tests", function () {
           assert.property(res.body, "error");
           assert.strictEqual(res.body.error, "required field(s) missing");
         });
+      done();
     });
   });
 
