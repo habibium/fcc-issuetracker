@@ -261,25 +261,23 @@ suite("Functional Tests", function () {
   });
 
   suite("Delete issues", () => {
-    test("Delete an issue: DELETE request to /api/issues/{project}", async (done) => {
+    test("Delete an issue: DELETE request to /api/issues/{project}", async () => {
       // get an issue to delete
       const issues = await findAllIssues("apitest");
       // check if the response is an array and has at least one issue
-      if (Array.isArray(issues) && issues.length > 0 && issues[0]?._id)
-        request()
+      if (Array.isArray(issues) && issues.length > 0 && issues[0]?._id) {
+        const res = await request()
           .delete("/api/issues/apitest")
           .type("form")
-          .send({ _id: issues[0]._id })
-          .end((_err, res) => {
-            assert.equal(res.status, 200);
-            assert.isObject(res.body);
-            assert.property(res.body, "result");
-            assert.property(res.body, "_id");
-            assert.strictEqual(res.body.result, "successfully deleted");
-            // compare both ids
-            assert.strictEqual(res.body._id, issues[0]._id);
-            done();
-          });
+          .send({ _id: issues[0]._id?.toString() });
+        assert.equal(res.status, 200);
+        assert.isObject(res.body);
+        assert.property(res.body, "result");
+        assert.property(res.body, "_id");
+        assert.strictEqual(res.body.result, "successfully deleted");
+        // compare both ids
+        assert.strictEqual(res.body._id, issues[0]._id?.toString());
+      }
     });
 
     test("Delete an issue with an invalid _id: DELETE request to /api/issues/{project}", (done) => {
