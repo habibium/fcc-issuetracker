@@ -37,7 +37,7 @@ suite("Functional Tests", function () {
     test("View issues on a project: GET request to /api/issues/{project}", (done) => {
       request()
         .get("/api/issues/test")
-        .end((err, res) => {
+        .end((_err, res) => {
           assert.equal(res.status, 200);
           assert.isArray(res.body);
           if (res.body.length > 0) {
@@ -51,7 +51,7 @@ suite("Functional Tests", function () {
     test("View issues on a project with one filter: GET request to /api/issues/{project}", (done) => {
       request()
         .get("/api/issues/test?open=true")
-        .end((err, res) => {
+        .end((_err, res) => {
           assert.equal(res.status, 200);
           assert.isArray(res.body);
           if (res.body.length > 0) {
@@ -69,7 +69,7 @@ suite("Functional Tests", function () {
     test("View issues on a project with multiple filters: GET request to /api/issues/{project}", (done) => {
       request()
         .get("/api/issues/test?open=true&assigned_to=Joe")
-        .end((err, res) => {
+        .end((_err, res) => {
           assert.equal(res.status, 200);
           assert.isArray(res.body);
           if (res.body.length > 0) {
