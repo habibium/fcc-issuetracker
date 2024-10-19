@@ -191,10 +191,33 @@ suite("Functional Tests", function () {
     });
 
     test("Delete an issue with an invalid _id: DELETE request to /api/issues/{project}", (done) => {
+      const newId = crypto.randomUUID();
+      request()
+        .delete("/api/issues/apitest")
+        .type("form")
+        .send({ _id: newId })
+        .end((_err, res) => {
+          assert.equal(res.status, 200);
+          assert.isObject(res.body);
+          assert.property(res.body, "_id");
+          assert.property(res.body, "error");
+          assert.strictEqual(res.body._id, newId);
+          assert.strictEqual(res.body.error, "could not delete");
+        });
       done();
     });
 
     test("Delete an issue with missing _id: DELETE request to /api/issues/{project}", (done) => {
+      request()
+        .delete("/api/issues/apitest")
+        .type("form")
+        .send({ _id: "" })
+        .end((_err, res) => {
+          assert.equal(res.status, 200);
+          assert.isObject(res.body);
+          assert.property(res.body, "error");
+          assert.strictEqual(res.body.error, "missing _id");
+        });
       done();
     });
   });
