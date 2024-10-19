@@ -68,7 +68,16 @@ suite("Functional Tests", function () {
     });
 
     test("Create an issue with missing required fields: POST request to /api/issues/{project}", (done) => {
-      done();
+      request()
+        .post("/api/issues/apitest")
+        .type("form")
+        .send({})
+        .end((_err, res) => {
+          assert.equal(res.status, 200);
+          assert.isObject(res.body);
+          assert.property(res.body, "error");
+          assert.strictEqual(res.body.error, "required field(s) missing");
+        });
     });
   });
 
