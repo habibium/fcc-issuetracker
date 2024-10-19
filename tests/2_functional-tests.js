@@ -42,8 +42,8 @@ suite("Functional Tests", function () {
           for (const key in testIssue) {
             assert.strictEqual(res.body[key], testIssue[key]);
           }
+          done();
         });
-      done();
     });
 
     test("Create an issue with only required fields: POST request to /api/issues/{project}", (done) => {
@@ -64,8 +64,8 @@ suite("Functional Tests", function () {
           for (const key in testIssue) {
             assert.strictEqual(res.body[key], testIssue[key]);
           }
+          done();
         });
-      done();
     });
 
     test("Create an issue with missing required fields: POST request to /api/issues/{project}", (done) => {
@@ -78,8 +78,8 @@ suite("Functional Tests", function () {
           assert.isObject(res.body);
           assert.property(res.body, "error");
           assert.strictEqual(res.body.error, "required field(s) missing");
+          done();
         });
-      done();
     });
   });
 
@@ -162,8 +162,8 @@ suite("Functional Tests", function () {
             assert.strictEqual(res.body.result, "successfully updated");
             const updatedIssue = await findIssueById(issues[0]._id);
             assert.strictEqual(updatedIssue.issue_title, "Unga bunga");
+            done();
           });
-      done();
     });
 
     test("Update multiple fields on an issue: PUT request to /api/issues/{project}", async (done) => {
@@ -193,8 +193,8 @@ suite("Functional Tests", function () {
             assert.strictEqual(updatedIssue.created_by, "Unga bunga");
             assert.strictEqual(updatedIssue.assigned_to, "Unga bunga");
             assert.strictEqual(updatedIssue.status_text, "Unga bunga");
+            done();
           });
-      done();
     });
 
     test("Update an issue with missing _id: PUT request to /api/issues/{project}", (done) => {
@@ -207,8 +207,8 @@ suite("Functional Tests", function () {
           assert.isObject(res.body);
           assert.property(res.body, "error");
           assert.strictEqual(res.body.error, "missing _id");
+          done();
         });
-      done();
     });
 
     test("Update an issue with no fields to update: PUT request to /api/issues/{project}", async (done) => {
@@ -233,9 +233,8 @@ suite("Functional Tests", function () {
             assert.property(res.body, "error");
             assert.strictEqual(res.body._id, issues[0]._id);
             assert.strictEqual(res.body.error, "no update field(s) sent");
+            done();
           });
-
-      done();
     });
 
     test("Update an issue with an invalid _id: PUT request to /api/issues/{project}", (done) => {
@@ -256,8 +255,8 @@ suite("Functional Tests", function () {
           assert.property(res.body, "error");
           assert.strictEqual(res.body._id, newId);
           assert.strictEqual(res.body.error, "could not update");
+          done();
         });
-      done();
     });
   });
 
@@ -279,8 +278,8 @@ suite("Functional Tests", function () {
             assert.strictEqual(res.body.result, "successfully deleted");
             // compare both ids
             assert.strictEqual(res.body._id, issues[0]._id);
+            done();
           });
-      done();
     });
 
     test("Delete an issue with an invalid _id: DELETE request to /api/issues/{project}", (done) => {
@@ -296,8 +295,8 @@ suite("Functional Tests", function () {
           assert.property(res.body, "error");
           assert.strictEqual(res.body._id, newId);
           assert.strictEqual(res.body.error, "could not delete");
+          done();
         });
-      done();
     });
 
     test("Delete an issue with missing _id: DELETE request to /api/issues/{project}", (done) => {
@@ -310,8 +309,8 @@ suite("Functional Tests", function () {
           assert.isObject(res.body);
           assert.property(res.body, "error");
           assert.strictEqual(res.body.error, "missing _id");
+          done();
         });
-      done();
     });
   });
 });
