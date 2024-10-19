@@ -163,6 +163,36 @@ suite("Functional Tests", function () {
     });
 
     test("Update an issue with no fields to update: PUT request to /api/issues/{project}", (done) => {
+      request()
+        .get("/api/issues/apitest")
+        .end((_err, getResponse) => {
+          // check if the response is an array and has at least one issue
+          if (
+            Array.isArray(getResponse.body) &&
+            getResponse.body.length > 0 &&
+            getResponse.body[0]?._id
+          )
+            request()
+              .put("/api/issues/apitest")
+              .type("form")
+              .send({
+                _id: getResponse.body[0]._id,
+                issue_title: "",
+                issue_text: "",
+                created_by: "",
+                assigned_to: "",
+                status_text: "",
+              })
+              .end((_err, res) => {
+                assert.equal(res.status, 200);
+                assert.isObject(res.body);
+                assert.property(res.body, "_id");
+                assert.property(res.body, "error");
+                assert.strictEqual(res.body._id, getResponse.body[0]._id);
+                assert.strictEqual(res.body.error, "no update field(s) sent");
+              });
+        });
+
       done();
     });
 
@@ -171,7 +201,7 @@ suite("Functional Tests", function () {
     });
   });
 
-  suite("Delete issues", () => {
+  suite("jelete issues", () => {
     test("Delete an issue: DELETE request to /api/issues/{project}", (done) => {
       // get an issue to delete
       request()
