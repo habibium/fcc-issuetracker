@@ -165,7 +165,34 @@ suite("Functional Tests", function () {
       done();
     });
 
-    test("Update multiple fields on an issue: PUT request to /api/issues/{project}", (done) => {
+    test("Update multiple fields on an issue: PUT request to /api/issues/{project}", async (done) => {
+      const issues = await findAllIssues("apitest");
+      if (Array.isArray(issues) && issues.length > 0 && issues[0]?._id)
+        request()
+          .put("/api/issues/apitest")
+          .type("form")
+          .send({
+            _id: issues[0]._id,
+            issue_title: "Unga bunga",
+            issue_text: "Unga bunga",
+            created_by: "Unga bunga",
+            assigned_to: "Unga bunga",
+            status_text: "Unga bunga",
+          })
+          .end(async (_err, res) => {
+            assert.equal(res.status, 200);
+            assert.isObject(res.body);
+            assert.property(res.body, "_id");
+            assert.property(res.body, "result");
+            assert.strictEqual(res.body._id, issues[0]._id);
+            assert.strictEqual(res.body.result, "successfully updated");
+            const updatedIssue = await findIssueById(issues[0]._id);
+            assert.strictEqual(updatedIssue.issue_title, "Unga bunga");
+            assert.strictEqual(updatedIssue.issue_text, "Unga bunga");
+            assert.strictEqual(updatedIssue.created_by, "Unga bunga");
+            assert.strictEqual(updatedIssue.assigned_to, "Unga bunga");
+            assert.strictEqual(updatedIssue.status_text, "Unga bunga");
+          });
       done();
     });
 
