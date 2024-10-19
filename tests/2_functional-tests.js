@@ -6,14 +6,15 @@ const server = require("../server");
 chai.use(chaiHttp);
 
 const ISSUE_FIELDS = [
-  "_id",
   "assigned_to",
-  "issue_title",
-  "issue_title",
-  "created_on",
-  "created_by",
-  "updated_on",
+  "status_text",
   "open",
+  "_id",
+  "issue_title",
+  "issue_text",
+  "created_by",
+  "created_on",
+  "updated_on",
 ];
 
 const request = () => chai.request(server).keepOpen();
