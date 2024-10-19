@@ -22,10 +22,48 @@ const request = () => chai.request(server).keepOpen();
 suite("Functional Tests", function () {
   suite("Create issues", () => {
     test("Create an issue with every field: POST request to /api/issues/{project}", (done) => {
+      const testIssue = {
+        issue_title: "Test issue with every field",
+        issue_text: "This is a test issue with every field",
+        created_by: "Functional test",
+        assigned_to: "BesterTesterMochaChai",
+        status_text: "In progress",
+      };
+
+      request()
+        .post("/api/issues/apitest")
+        .type("form")
+        .send(testIssue)
+        .end((_err, res) => {
+          assert.equal(res.status, 200);
+          assert.isObject(res.body);
+          ISSUE_FIELDS.forEach((p) => assert.property(res.body, p));
+          for (const key in testIssue) {
+            assert.strictEqual(res.body[key], testIssue[key]);
+          }
+        });
       done();
     });
 
     test("Create an issue with only required fields: POST request to /api/issues/{project}", (done) => {
+      const testIssue = {
+        issue_title: "Test issue with only required fields",
+        issue_text: "This is a test issue with only required fields",
+        created_by: "Functional test",
+      };
+
+      request()
+        .post("/api/issues/apitest")
+        .type("form")
+        .send(testIssue)
+        .end((_err, res) => {
+          assert.equal(res.status, 200);
+          assert.isObject(res.body);
+          ISSUE_FIELDS.forEach((p) => assert.property(res.body, p));
+          for (const key in testIssue) {
+            assert.strictEqual(res.body[key], testIssue[key]);
+          }
+        });
       done();
     });
 
@@ -37,7 +75,7 @@ suite("Functional Tests", function () {
   suite("View issues", () => {
     test("View issues on a project: GET request to /api/issues/{project}", (done) => {
       request()
-        .get("/api/issues/test")
+        .get("/api/issues/apitest")
         .end((_err, res) => {
           assert.equal(res.status, 200);
           assert.isArray(res.body);
@@ -51,7 +89,7 @@ suite("Functional Tests", function () {
 
     test("View issues on a project with one filter: GET request to /api/issues/{project}", (done) => {
       request()
-        .get("/api/issues/test?open=true")
+        .get("/api/issues/apitest?open=true")
         .end((_err, res) => {
           assert.equal(res.status, 200);
           assert.isArray(res.body);
@@ -68,8 +106,13 @@ suite("Functional Tests", function () {
     });
 
     test("View issues on a project with multiple filters: GET request to /api/issues/{project}", (done) => {
+      const filters = {
+        open: true,
+        assigned_to: "Joe",
+      };
+
       request()
-        .get("/api/issues/test?open=true&assigned_to=Joe")
+        .get(`/api/issues/apitest?${new URLSearchParams(filters).toString()}`)
         .end((_err, res) => {
           assert.equal(res.status, 200);
           assert.isArray(res.body);
@@ -78,8 +121,8 @@ suite("Functional Tests", function () {
             for (let i = 0; i < length; i++) {
               const issue = res.body[i];
               ISSUE_FIELDS.forEach((p) => assert.property(issue, p));
-              assert.isTrue(issue.open);
-              assert.strictEqual(issue.assigned_to, "Joe");
+              assert.strictEqual(issue.open, filters.open);
+              assert.strictEqual(issue.assigned_to, filters.assigned_to);
             }
           }
           done();
