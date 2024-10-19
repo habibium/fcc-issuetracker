@@ -1,4 +1,5 @@
 "use strict";
+require("../db");
 
 module.exports = function (app) {
   app
@@ -6,7 +7,7 @@ module.exports = function (app) {
 
     .get(function (req, res) {
       let project = req.params.project;
-      res.json({});
+      res.json({ project, foo: "bar" });
     })
 
     .post(function (req, res) {
