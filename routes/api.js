@@ -1,26 +1,36 @@
 "use strict";
-require("../db");
+const { createIssue, findAllIssues } = require("../db");
 
 module.exports = function (app) {
   app
     .route("/api/issues/:project")
 
-    .get(function (req, res) {
+    .get(async (req, res) => {
       let project = req.params.project;
-      res.json({ project, foo: "bar" });
+      const params = req.query;
+      const issues = await findAllIssues(project, params);
+      res.json(issues);
     })
 
-    .post(function (req, res) {
+    .post(async (req, res) => {
+      let project = req.params.project;
+      const requiredFields = ["issue_title", "issue_text", "created_by"];
+
+      // check for required fields
+      if (!requiredFields.every((field) => req?.body[field])) {
+        return res.json({ error: "required field(s) missing" });
+      }
+
+      const response = await createIssue({ project, ...req.body });
+      return res.json(response);
+    })
+
+    .put(async (req, res) => {
       let project = req.params.project;
       res.json([]);
     })
 
-    .put(function (req, res) {
-      let project = req.params.project;
-      res.json([]);
-    })
-
-    .delete(function (req, res) {
+    .delete(async (req, res) => {
       let project = req.params.project;
       res.json([]);
     });
