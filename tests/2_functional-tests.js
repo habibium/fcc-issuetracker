@@ -142,59 +142,56 @@ suite("Functional Tests", function () {
   });
 
   suite("Update issues", () => {
-    test("Update one field on an issue: PUT request to /api/issues/{project}", async (done) => {
+    test("Update one field on an issue: PUT request to /api/issues/{project}", async () => {
       const issues = await findAllIssues("apitest");
       // check if the response is an array and has at least one issue
-      if (Array.isArray(issues) && issues.length > 0 && issues[0]?._id)
-        request()
+      if (Array.isArray(issues) && issues.length > 0 && issues[0]?._id) {
+        const res = await request()
           .put("/api/issues/apitest")
           .type("form")
           .send({
-            _id: issues[0]._id,
+            _id: issues[0]._id?.toString(),
             issue_title: "Unga bunga",
-          })
-          .end(async (_err, res) => {
-            assert.equal(res.status, 200);
-            assert.isObject(res.body);
-            assert.property(res.body, "_id");
-            assert.property(res.body, "result");
-            assert.strictEqual(res.body._id, issues[0]._id);
-            assert.strictEqual(res.body.result, "successfully updated");
-            const updatedIssue = await findIssueById(issues[0]._id);
-            assert.strictEqual(updatedIssue.issue_title, "Unga bunga");
-            done();
           });
+        assert.equal(res.status, 200);
+        assert.isObject(res.body);
+        assert.property(res.body, "_id");
+        assert.property(res.body, "result");
+        assert.strictEqual(res.body._id, issues[0]._id?.toString());
+        assert.strictEqual(res.body.result, "successfully updated");
+        const updatedIssue = await findIssueById(issues[0]._id?.toString());
+        assert.strictEqual(updatedIssue.issue_title, "Unga bunga");
+      }
     });
 
-    test("Update multiple fields on an issue: PUT request to /api/issues/{project}", async (done) => {
+    test("Update multiple fields on an issue: PUT request to /api/issues/{project}", async () => {
       const issues = await findAllIssues("apitest");
-      if (Array.isArray(issues) && issues.length > 0 && issues[0]?._id)
-        request()
+      if (Array.isArray(issues) && issues.length > 0 && issues[0]?._id) {
+        const res = await request()
           .put("/api/issues/apitest")
           .type("form")
           .send({
-            _id: issues[0]._id,
+            _id: issues[0]._id?.toString(),
             issue_title: "Unga bunga",
             issue_text: "Unga bunga",
             created_by: "Unga bunga",
             assigned_to: "Unga bunga",
             status_text: "Unga bunga",
-          })
-          .end(async (_err, res) => {
-            assert.equal(res.status, 200);
-            assert.isObject(res.body);
-            assert.property(res.body, "_id");
-            assert.property(res.body, "result");
-            assert.strictEqual(res.body._id, issues[0]._id);
-            assert.strictEqual(res.body.result, "successfully updated");
-            const updatedIssue = await findIssueById(issues[0]._id);
-            assert.strictEqual(updatedIssue.issue_title, "Unga bunga");
-            assert.strictEqual(updatedIssue.issue_text, "Unga bunga");
-            assert.strictEqual(updatedIssue.created_by, "Unga bunga");
-            assert.strictEqual(updatedIssue.assigned_to, "Unga bunga");
-            assert.strictEqual(updatedIssue.status_text, "Unga bunga");
-            done();
           });
+
+        assert.equal(res.status, 200);
+        assert.isObject(res.body);
+        assert.property(res.body, "_id");
+        assert.property(res.body, "result");
+        assert.strictEqual(res.body._id, issues[0]._id?.toString());
+        assert.strictEqual(res.body.result, "successfully updated");
+        const updatedIssue = await findIssueById(issues[0]._id?.toString());
+        assert.strictEqual(updatedIssue.issue_title, "Unga bunga");
+        assert.strictEqual(updatedIssue.issue_text, "Unga bunga");
+        assert.strictEqual(updatedIssue.created_by, "Unga bunga");
+        assert.strictEqual(updatedIssue.assigned_to, "Unga bunga");
+        assert.strictEqual(updatedIssue.status_text, "Unga bunga");
+      }
     });
 
     test("Update an issue with missing _id: PUT request to /api/issues/{project}", (done) => {
@@ -211,34 +208,32 @@ suite("Functional Tests", function () {
         });
     });
 
-    test("Update an issue with no fields to update: PUT request to /api/issues/{project}", async (done) => {
+    test("Update an issue with no fields to update: PUT request to /api/issues/{project}", async () => {
       const issues = await findAllIssues("apitest");
       // check if the response is an array and has at least one issue
-      if (Array.isArray(issues) && issues.length > 0 && issues[0]?._id)
-        request()
+      if (Array.isArray(issues) && issues.length > 0 && issues[0]?._id) {
+        const res = await request()
           .put("/api/issues/apitest")
           .type("form")
           .send({
-            _id: issues[0]._id,
+            _id: issues[0]._id?.toString(),
             issue_title: "",
             issue_text: "",
             created_by: "",
             assigned_to: "",
             status_text: "",
-          })
-          .end((_err, res) => {
-            assert.equal(res.status, 200);
-            assert.isObject(res.body);
-            assert.property(res.body, "_id");
-            assert.property(res.body, "error");
-            assert.strictEqual(res.body._id, issues[0]._id);
-            assert.strictEqual(res.body.error, "no update field(s) sent");
-            done();
           });
+        assert.equal(res.status, 200);
+        assert.isObject(res.body);
+        assert.property(res.body, "_id");
+        assert.property(res.body, "error");
+        assert.strictEqual(res.body._id, issues[0]._id?.toString());
+        assert.strictEqual(res.body.error, "no update field(s) sent");
+      }
     });
 
     test("Update an issue with an invalid _id: PUT request to /api/issues/{project}", (done) => {
-      const newId = crypto.randomUUID();
+      const newId = crypto.randomUUID().toString();
       request()
         .put("/api/issues/apitest")
         .type("form")
@@ -281,7 +276,7 @@ suite("Functional Tests", function () {
     });
 
     test("Delete an issue with an invalid _id: DELETE request to /api/issues/{project}", (done) => {
-      const newId = crypto.randomUUID();
+      const newId = crypto.randomUUID().toString();
       request()
         .delete("/api/issues/apitest")
         .type("form")

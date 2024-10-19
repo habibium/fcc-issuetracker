@@ -1,6 +1,11 @@
 "use strict";
 const e = require("express");
-const { createIssue, findAllIssues, deleteIssue } = require("../db");
+const {
+  createIssue,
+  findAllIssues,
+  deleteIssue,
+  updateIssue,
+} = require("../db");
 
 module.exports = function (app) {
   app
@@ -27,8 +32,20 @@ module.exports = function (app) {
     })
 
     .put(async (req, res) => {
-      let project = req.params.project;
-      res.json([]);
+      const { _id, ...updates } = req.body;
+      if (!_id) return res.json({ error: "missing _id" });
+      if (
+        typeof updates !== "object" ||
+        Object.keys(updates).length <= 0 ||
+        Object.keys(updates).every((key) => !updates[key])
+      )
+        return res.json({ error: "no update field(s) sent", _id });
+      try {
+        await updateIssue(_id, updates);
+        return res.json({ result: "successfully updated", _id });
+      } catch (error) {
+        return res.json({ error: "could not update", _id });
+      }
     })
 
     .delete(async (req, res) => {

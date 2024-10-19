@@ -41,10 +41,8 @@ const findAllIssues = async (project, params) =>
 
 const findIssueById = async (id) => await Issue.findById(id).exec();
 
-const updateIssue = async (id, updates) => {
-  const updatedIssue = await Issue.findByIdAndUpdate(id, updates).exec();
-  return updatedIssue;
-};
+const updateIssue = async (id, updates) =>
+  await Issue.findByIdAndUpdate(id, updates).exec();
 
 const deleteIssue = async (id) => await Issue.findByIdAndDelete(id).exec();
 
